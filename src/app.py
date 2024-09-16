@@ -37,11 +37,32 @@ def sitemap():
 
 ################################################ GETS #########################################
 
+
+########## USERS ##########
+
 @app.route('/user', methods=['GET'])
 def get_user():
     all_users = User.query.all()
     users = [user.serialize() for user in all_users]
     return jsonify(users), 200
+
+@app.route('/users/<int:user_id>', methods=['GET'])
+def get_single_user(user_id):
+    user = User.query.get(user_id)
+
+    if not user:
+        return jsonify({'message': 'Usuario no encontrado'}), 404
+
+    return jsonify(user.serialize()), 200
+
+@app.route('/user_favorites', methods=['GET'])
+def get_user_favorites():
+    all_users = User.query.all()
+    users_favorites = [user.serialize() for user in all_users]
+    return jsonify(users_favorites), 200
+
+
+########## CHARACTERS ##########
 
 @app.route('/character', methods=['GET'])
 def get_character():
@@ -49,16 +70,16 @@ def get_character():
     characters = [character.serialize() for character in all_characters]
     return jsonify(characters), 200
 
-@app.route('/character/<int:people_id>', methods=['GET'])
-def get_single_character(people_id):
-    character = Character.query.get(people_id)
+@app.route('/characters/<int:character_id>', methods=['GET'])
+def get_single_character(character_id):
+    character = Character.query.get(character_id)
 
     if not character:
         return jsonify({'message': 'Personaje no encontrado'}), 404
 
     return jsonify(character.serialize()), 200
 
-
+########## PLANETS ##########
 
 @app.route('/planet', methods=['GET'])
 def get_planet():
@@ -66,11 +87,33 @@ def get_planet():
     planets = [planet.serialize() for planet in all_planets]
     return jsonify(planets), 200
 
+@app.route('/planets/<int:planet_id>', methods=['GET'])
+def get_single_planet(planet_id):
+    planet = Planet.query.get(planet_id)
+
+    if not planet:
+        return jsonify({'message': 'Planeta no encontrado'}), 404
+
+    return jsonify(planet.serialize()), 200
+
+########## STARSHIPS ##########
+
 @app.route('/starship', methods=['GET'])
 def get_starship():
     all_starships = Starship.query.all()
-    starships = [starship.serialize() for starships in all_starships]
+    starships = [starships.serialize() for starships in all_starships]
     return jsonify(starships), 200
+
+@app.route('/starships/<int:starship_id>', methods=['GET'])
+def get_single_starship(starship_id):
+    starship = Starship.query.get(starship_id)
+
+    if not starship:
+        return jsonify({'message': 'Nave no encontrada'}), 404
+
+    return jsonify(starship.serialize()), 200
+
+########## FAVORITES ##########
 
 @app.route('/favoriteItem', methods=['GET'])
 def get_favorite_item():
