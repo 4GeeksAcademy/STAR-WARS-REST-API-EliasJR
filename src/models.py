@@ -2,15 +2,13 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-
-
 class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), nullable=False)
     email = db.Column(db.String(250), nullable=False)
-    password = db.Column(db.String(250), nullable=False) 
-    is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+    password = db.Column(db.String(250), nullable=False)
+    is_active = db.Column(db.Boolean(), nullable=False)
 
     favorites = db.relationship("FavoriteItem", back_populates="user")
 
@@ -39,7 +37,7 @@ class Character(db.Model):
     gender = db.Column(db.String(50), nullable=False)
 
     def __repr__(self):
-        return '<Character %r>' % self.name
+        return f'<Character {self.name}>'
 
     def serialize(self):
         return {
@@ -53,7 +51,7 @@ class Character(db.Model):
             "birth_year": self.birth_year,
             "gender": self.gender,
         }
-    
+
 class Planet(db.Model):
     __tablename__ = "planets"
     id = db.Column(db.Integer, primary_key=True)
@@ -62,12 +60,10 @@ class Planet(db.Model):
     terrain = db.Column(db.String(50), nullable=False)
     climate = db.Column(db.String(50), nullable=False)
     gravity = db.Column(db.String(50), nullable=False)
-    terrain = db.Column(db.String(50), nullable=False)
     surface_water = db.Column(db.String(50), nullable=False)
-    population = db.Column(db.String(50), nullable=False)
 
     def __repr__(self):
-        return '<Planet %r>' % self.name
+        return f'<Planet {self.name}>'
 
     def serialize(self):
         return {
@@ -77,29 +73,28 @@ class Planet(db.Model):
             "terrain": self.terrain,
             "climate": self.climate,
             "gravity": self.gravity,
-            "terrain": self.terrain,
             "surface_water": self.surface_water,
-            "population": self.population,
         }
-    
+
 class Starship(db.Model):
-    __tablename__ = "Starships"
+    __tablename__ = "starships"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), nullable=False)
-    model  = db.Column(db.Integer, nullable=False)
-    manufacturer  = db.Column(db.String(50), nullable=False)
+    model = db.Column(db.String(50), nullable=False)  # Adjusted to String
+    manufacturer = db.Column(db.String(50), nullable=False)
     cost_in_credits = db.Column(db.String(50), nullable=False)
     length = db.Column(db.String(50), nullable=False)
     max_atmosphering_speed = db.Column(db.String(50), nullable=False)
     crew = db.Column(db.String(50), nullable=False)
     passengers = db.Column(db.String(50), nullable=False)
     cargo_capacity = db.Column(db.String(50), nullable=False)
-    cargo_capacity = db.Column(db.String(50), nullable=False)
-    cargo_capacity = db.Column(db.String(50), nullable=False)
-    cargo_capacity = db.Column(db.String(50), nullable=False)
+    consumables = db.Column(db.String(50))  # Added missing column
+    hyperdrive_rating = db.Column(db.String(50))  # Added missing column
+    mglt = db.Column(db.String(50))  # Added missing column
+    starship_class = db.Column(db.String(50))  # Added missing column
 
     def __repr__(self):
-        return '<Starship %r>' % self.name
+        return f'<Starship {self.name}>'
 
     def serialize(self):
         return {
@@ -109,16 +104,16 @@ class Starship(db.Model):
             "manufacturer": self.manufacturer,
             "cost_in_credits": self.cost_in_credits,
             "length": self.length,
-            "max_atmosphering_speed": "950",
-			"crew": "30-165",
-			"passengers": "600",
+            "max_atmosphering_speed": self.max_atmosphering_speed,
+            "crew": self.crew,
+            "passengers": self.passengers,
             "cargo_capacity": self.cargo_capacity,
             "consumables": self.consumables,
-			"hyperdrive_rating": self.hyperdrive_rating,
-			"MGLT": self.mglt,
-			"starship_class": self.starship_class,
+            "hyperdrive_rating": self.hyperdrive_rating,
+            "MGLT": self.mglt,
+            "starship_class": self.starship_class,
         }
-    
+
 class FavoriteItem(db.Model):
     __tablename__ = "favorites"
     id = db.Column(db.Integer, primary_key=True)
@@ -130,7 +125,7 @@ class FavoriteItem(db.Model):
 
     character_id = db.Column(db.Integer, db.ForeignKey("characters.id"))
     planet_id = db.Column(db.Integer, db.ForeignKey("planets.id"))
-    starship_id = db.Column(db.Integer, db.ForeignKey("Starships.id"))
+    starship_id = db.Column(db.Integer, db.ForeignKey("starships.id"))
 
     user = db.relationship("User", back_populates="favorites")
     character = db.relationship("Character")
@@ -138,7 +133,7 @@ class FavoriteItem(db.Model):
     starship = db.relationship("Starship")
 
     def __repr__(self):
-        return '<FavoriteItem %r>' % self.id
+        return f'<FavoriteItem {self.id}>'
 
     def serialize(self):
         return {
@@ -148,11 +143,9 @@ class FavoriteItem(db.Model):
             "name": self.name,
             "attribute1": self.attribute1,
             "attribute2": self.attribute2,
-
             "character_id": self.character_id,
             "planet_id": self.planet_id,
             "starship_id": self.starship_id,
-
             "user": self.user.serialize(),
             "character": self.character.serialize() if self.character else None,
             "planet": self.planet.serialize() if self.planet else None,
