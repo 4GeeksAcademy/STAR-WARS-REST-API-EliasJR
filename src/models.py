@@ -139,6 +139,7 @@ class Starship(db.Model):
     def serialize(self):
         return {
             "id": self.id,
+            "name": self.name,
             "model": self.model,
             "manufacturer": self.manufacturer,
             "cost_in_credits": self.cost_in_credits,
