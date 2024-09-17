@@ -1,20 +1,21 @@
 import os
 from flask_admin import Admin
-from models import db, User, Character, Planet, Starship, FavoriteItem
+from models import db, User , Character , Planet , Starship, Character_fav , Planet_fav, Starship_fav
 from flask_admin.contrib.sqla import ModelView
 
 def setup_admin(app):
-    # Configurar la clave secreta para la aplicación
     app.secret_key = os.environ.get('FLASK_APP_KEY', 'sample key')
     app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+    admin = Admin(app, name='Administrador StarWars', template_mode='bootstrap3')
 
-    # Configurar Flask-Admin
-    admin = Admin(app, name='4Geeks Admin', template_mode='bootstrap3')
-
-    # Añadir las vistas de los modelos al panel de administración
+    
+    # Add your models here, for example this is how we add a the User model to the admin
     admin.add_view(ModelView(User, db.session))
     admin.add_view(ModelView(Character, db.session))
+    admin.add_view(ModelView(Character_fav, db.session))
     admin.add_view(ModelView(Planet, db.session))
+    admin.add_view(ModelView(Planet_fav, db.session))
     admin.add_view(ModelView(Starship, db.session))
-    admin.add_view(ModelView(FavoriteItem, db.session))
-
+    admin.add_view(ModelView(Starship_fav, db.session))
+    # You can duplicate that line to add mew models
+    # admin.add_view(ModelView(YourModelName, db.session))
